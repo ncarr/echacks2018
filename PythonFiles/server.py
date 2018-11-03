@@ -32,12 +32,12 @@ async def iterate_over_file(midi_file):
     # Iterate over messages in the song
     global songActive
     songActive = True
-    for msg in midi_file:
-        if msg.type == 'note_on' and msg.velocity == 0:
+    for message in midi_file:
+        if message.type == 'note_on' and message.velocity == 0:
             # Set the new note
             global expected
-            expected = fingerings[str(msg.note)]
-            await asyncio.sleep(msg.time)
+            expected = fingerings[str(message.note)]
+            await asyncio.sleep(message.time)
             try:
                 # Calculate the accuracy for the previous note
                 accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
