@@ -1,6 +1,6 @@
 <template>
   <div class = "column">
-    <v-layout row wrap id="options">
+    <v-layout id="options">
       <h1 class="font-weight-light title">Music Selector</h1>
       <div id="slider">
         <v-slider
@@ -45,6 +45,7 @@
 
   #slider{
     width: 15%;
+    margin-left: 2%;
   }
 
   #select{
@@ -52,6 +53,9 @@
   }
 
   #options{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     padding: 10px;
   }
 
