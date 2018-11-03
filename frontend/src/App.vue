@@ -8,9 +8,9 @@
     </v-toolbar>
 
     <v-content>
-      <!--<Valves/>
+      <!--<sheet/>
       <dashboard/>-->
-      <sheet/>
+      <Valves/>
     </v-content>
   </v-app>
 </template>

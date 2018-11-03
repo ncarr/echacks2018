@@ -41,7 +41,7 @@
     },
     mounted() {
       var scope = this;
-      var ws = new WebSocket("ws://192.168.9.28:6789");
+      var ws = new WebSocket("ws://192.168.137.1:6789");
 
       ws.onopen = function() {
         //ws.send("0 1 1");
