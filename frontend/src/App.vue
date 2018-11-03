@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar app>
+    <v-toolbar app color="#c8a415">
       <v-toolbar-title class="headline text-uppercase">
         <span>ECHacks</span>
         <span class="font-weight-light">PROJECT NAME</span>
@@ -8,9 +8,9 @@
     </v-toolbar>
 
     <v-content>
-      <!--<sheet/>
+      <!--<Valves/>
       <dashboard/>-->
-      <Valves/>
+      <sheet/>
     </v-content>
   </v-app>
 </template>

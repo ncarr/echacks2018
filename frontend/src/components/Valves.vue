@@ -1,27 +1,12 @@
-<style scoped>
-
-#row {
-    display: flex;
-    flex-direction: row;
-}
-
-#column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-</style>
-
 <template>
 
 <div id="column">
     <h1 class="headline">Valves</h1>
-    <div id="row">
+    <v-layout row wrap>
         <v-btn fab dark large :color="vc1">1</v-btn>
         <v-btn fab dark large :color="vc2">2</v-btn>
         <v-btn fab dark large :color="vc3">3</v-btn>
-    </div>
+    </v-layout>
 </div>
 
 </template>
@@ -83,3 +68,11 @@
   }
 
 </script>
+
+<style scoped>
+  #column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>
