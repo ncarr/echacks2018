@@ -85,4 +85,8 @@
   #bpmtext{
     width: 5%;
   }
+
+  #music{
+    width: 100%;
+  }
 </style>
