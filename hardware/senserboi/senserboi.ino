@@ -1,10 +1,10 @@
 #include <ESP8266WiFi.h>
 #include <WebSocketClient.h>
 
-const char* ssid  = "echacks";
-const char* password = "Fall2020";
+const char* ssid  = "Baritone";
+const char* password = "echacks2018";
 char path[] = "/";
-char host[] = "192.168.9.28";
+char host[] = "192.168.137.1";
   
 WebSocketClient webSocketClient;
 // Use WiFiClient class to create TCP connections
