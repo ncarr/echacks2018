@@ -15,14 +15,22 @@ valves = ''
 with open('fingerings.json') as json_file:
     fingerings = json.load(json_file)
 
+currentNoteAccuracy = []
+songAccuracy = []
+expected = ''
 
 async def iterateOverFile():
     # Iterate over messages in it
     for msg in songFile:
         if msg.type == 'note_on' and msg.velocity == 0:
+            # Set the new note
+            global expected
+            expected = fingerings[str(msg.note)]
             await asyncio.sleep(msg.time)
-            print('current ' + valves)
-            print('expected ' + fingerings[str(msg.note)])
+            # Calculate the accuracy for the last note
+            accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
+            songAccuracy.append(accuracy_percentage)
+    print(songAccuracy)
 
 
 async def counter(websocket, path):
@@ -31,6 +39,10 @@ async def counter(websocket, path):
         async for message in websocket:
             global valves
             valves = message
+            if valves == expected:
+                currentNoteAccuracy.append(1)
+            else:
+                currentNoteAccuracy.append(0)
     except:
         pass
 
