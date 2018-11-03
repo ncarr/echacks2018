@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="text-align:center">
   <h1 class="headline">Dashboard</h1>
   <p> Welcome to the Sensor Baritone </p>
   <button type="button"> Enter Name and Music </button>
@@ -22,7 +22,6 @@ button {
     color: white; /* White text */
     padding: 10px 24px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
-    float: left; /* Float the buttons side by side */
 }
 
   
