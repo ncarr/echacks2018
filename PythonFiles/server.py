@@ -5,14 +5,13 @@ import asyncio
 import websockets
 
 # Get the midi file
-songFile = mido.MidiFile('don\'t_stop_believing.mid')
+songFile = mido.MidiFile('Music/don\'t_stop_believing.mid')
 sockets = set()
 valves = ''
 
 # Convert the midi file into a JSON that we can send to the Vue server via socket
 midiList = []
 for msg in songFile:
-    print(msg)
     if msg.type == 'note_on':
         noteTime = round(msg.time*4)/4
         if msg.velocity == 0:
@@ -28,7 +27,6 @@ for msg in songFile:
             })
 # Convert it to JSON
 midiJSON = json.dumps(midiList)
-print(midiJSON)
 
 # For reference = Bb is note 46, High Bb is 58, Middle C is 60
 # Load the fingerings file for the baritone
