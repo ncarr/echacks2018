@@ -31,7 +31,7 @@
   export default {
     data: () => ({
       items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-      bpm: 96
+      bpm: 120
     }),
     mounted() {
       var VF = Vex.Flow;
@@ -41,13 +41,13 @@
       var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
 
       // Size our svg:
-      renderer.resize(500, 500);
+      renderer.resize(div.clientWidth, div.clientHeight);
 
       // And get a drawing context:
       var context = renderer.getContext();
 
       // Create a stave at position 10, 40 of width 400 on the canvas.
-      var stave = new VF.Stave(10, 40, 400);
+      var stave = new VF.Stave(10, 40, div.clientWidth-20);
 
       // Add a clef and time signature.
       stave.addClef("treble").addTimeSignature("4/4");
@@ -88,5 +88,6 @@
 
   #music{
     width: 100%;
+    height: 100%;
   }
 </style>
