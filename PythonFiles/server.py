@@ -28,8 +28,11 @@ async def iterateOverFile():
             expected = fingerings[str(msg.note)]
             await asyncio.sleep(msg.time)
             # Calculate the accuracy for the last note
-            accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
-            songAccuracy.append(accuracy_percentage)
+            try:
+                accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
+                songAccuracy.append(accuracy_percentage)
+            except ZeroDivisionError:
+                pass
     print(songAccuracy)
 
 
