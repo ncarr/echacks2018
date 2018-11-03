@@ -5,7 +5,7 @@ import asyncio
 import websockets
 
 # Get the midi file
-songFile = mido.MidiFile('mad_world.mid')
+songFile = mido.MidiFile('don\'t_stop_believing.mid')
 sockets = set()
 valves = ''
 
@@ -13,15 +13,22 @@ valves = ''
 midiList = []
 for msg in songFile:
     print(msg)
-    if msg.type == 'note_on' and msg.velocity == 0:
-        midiList.append({
-            'note': msg.note,
-            # Round note to nearest .25 because musescore is odd
-            'time': round(msg.time*4)/4,
-        })
-        time = 0
+    if msg.type == 'note_on':
+        noteTime = round(msg.time*4)/4
+        if msg.velocity == 0:
+            midiList.append({
+                'note': msg.note,
+                # Round note to nearest .25 because musescore is odd
+                'time': noteTime,
+            })
+        elif msg.velocity == 80 and noteTime:
+            midiList.append({
+                'note': 00,
+                'time': noteTime
+            })
 # Convert it to JSON
 midiJSON = json.dumps(midiList)
+print(midiJSON)
 
 # For reference = Bb is note 46, High Bb is 58, Middle C is 60
 # Load the fingerings file for the baritone
@@ -39,19 +46,23 @@ async def iterate_over_file(midi_file):
     global songActive
     songActive = True
     for message in midi_file:
-        if message.type == 'note_on' and message.velocity == 0:
-            # Set the new note
-            global expected
-            expected = fingerings[str(message.note)]
-            await asyncio.sleep(message.time)
-            try:
-                # Calculate the accuracy for the previous note
-                accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
-                # Add it to the list of the whole song
-                songAccuracy.append(accuracy_percentage)
+        if message.type == 'note_on':
+            if message.velocity == 0:
+                # Set the new note
+                global expected
+                expected = fingerings[str(message.note)]
+                await asyncio.sleep(message.time)
+                try:
+                    # Calculate the accuracy for the previous note
+                    accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
+                    # Add it to the list of the whole song
+                    songAccuracy.append(accuracy_percentage)
+                    currentNoteAccuracy.clear()
+                except ZeroDivisionError:
+                    pass
+            elif message.velocity == 80:
+                await asyncio.sleep(message.time)
                 currentNoteAccuracy.clear()
-            except ZeroDivisionError:
-                pass
     songActive = False
     print(songAccuracy)
 
