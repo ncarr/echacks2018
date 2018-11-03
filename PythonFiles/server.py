@@ -48,7 +48,7 @@ async def counter(websocket, path):
             valves = message
             print("Current: " + valves)
             print("Expected: " + expected)
-            print("Active: " + songActive)
+            print("Active: " + str(songActive))
             if songActive:
                 if valves == expected:
                     currentNoteAccuracy.append(1)
