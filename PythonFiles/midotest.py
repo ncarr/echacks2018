@@ -7,7 +7,6 @@ import json
 songFile = mido.MidiFile('mad_world.mid')
 
 # For reference = Bb is note 46, High Bb is 58, Middle C is 60
-
 # Load the fingerings file for the baritone
 with open('fingerings.json') as json_file:
     fingerings = json.load(json_file)
