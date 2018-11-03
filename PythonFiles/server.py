@@ -27,6 +27,7 @@ currentNoteAccuracy = []
 songAccuracy = []
 expected = ''
 
+
 async def iterate_over_file(midi_file):
     # Iterate over messages in the song
     global songActive
@@ -64,9 +65,10 @@ async def counter(websocket, path):
                 else:
                     currentNoteAccuracy.append(0)
             for socket in sockets:
-              socket.send(message)
+                socket.send(message)
     except Exception as e:
         print(e)
+
 
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(counter, '0.0.0.0', 6789))
