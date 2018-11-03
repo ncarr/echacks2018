@@ -11,14 +11,15 @@ valves = ''
 
 # Convert the midi file into a JSON that we can send to the Vue server via socket
 midiList = []
-noteCount = 0
 for msg in songFile:
+    print(msg)
     if msg.type == 'note_on' and msg.velocity == 0:
         midiList.append({
             'note': msg.note,
-            'time': msg.time,
+            # Round note to nearest .25 because musescore is odd
+            'time': round(msg.time*4)/4,
         })
-        noteCount += 1
+        time = 0
 # Convert it to JSON
 midiJSON = json.dumps(midiList)
 
