@@ -1,29 +1,30 @@
 <template>
-  <div class = "column">
-    <v-layout id="options">
-      <h1 class="font-weight-light title">Music Selector</h1>
-      <div id="slider">
-        <v-slider
-        v-model="bpm"
-        max="218"
-        min="40"
-        label="bpm"
-        ></v-slider>
-      </div>
-      <div id="bpmtext">
-        <v-text-field
+  <div style="text-align:center">
+    <div class = "column">
+      <v-layout id="options">
+        <h1 class="font-weight-light title">Music Selector</h1>
+        <div id="slider">
+          <v-slider
           v-model="bpm"
-          type="number"
-        ></v-text-field>
-      </div>
-      <v-spacer></v-spacer>
-      <div id="select">
-        <v-select :items="items" label="Music" ></v-select>
-      </div>
-    </v-layout>
-    <div id="music"></div>
+          max="218"
+          min="40"
+          label="bpm"
+          ></v-slider>
+        </div>
+        <div id="bpmtext">
+          <v-text-field
+            v-model="bpm"
+            type="number"
+          ></v-text-field>
+        </div>
+        <v-spacer></v-spacer>
+        <div id="select">
+          <v-select :items="items" label="Music" ></v-select>
+        </div>
+      </v-layout>
+      <div id="music"></div>
+    </div>
   </div>
-
 </template>
 
 <script>
