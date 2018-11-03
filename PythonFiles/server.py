@@ -15,13 +15,16 @@ valves = ''
 with open('fingerings.json') as json_file:
     fingerings = json.load(json_file)
 
+songActive = False
 currentNoteAccuracy = []
 songAccuracy = []
 expected = ''
 
-async def iterateOverFile():
-    # Iterate over messages in it
-    for msg in songFile:
+async def iterate_over_file(midi_file):
+    # Iterate over messages in the song
+    global songActive
+    songActive = True
+    for msg in midi_file:
         if msg.type == 'note_on' and msg.velocity == 0:
             # Set the new note
             global expected
@@ -33,6 +36,7 @@ async def iterateOverFile():
                 songAccuracy.append(accuracy_percentage)
             except ZeroDivisionError:
                 pass
+    songActive = False
     print(songAccuracy)
 
 
@@ -44,16 +48,17 @@ async def counter(websocket, path):
             valves = message
             print("Current: " + valves)
             print("Expected: " + expected)
-            print("--")
-            if valves == expected:
-                currentNoteAccuracy.append(1)
-            else:
-                currentNoteAccuracy.append(0)
+            print("Active: " + str(songActive))
+            if songActive:
+                if valves == expected:
+                    currentNoteAccuracy.append(1)
+                else:
+                    currentNoteAccuracy.append(0)
     except:
         pass
 
 
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(counter, '0.0.0.0', 6789))
-asyncio.get_event_loop().run_until_complete(iterateOverFile())
+asyncio.get_event_loop().run_until_complete(iterate_over_file(songFile))
 asyncio.get_event_loop().run_forever()
