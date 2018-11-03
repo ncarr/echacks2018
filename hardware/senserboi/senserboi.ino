@@ -37,10 +37,10 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
-  delay(3000);
+  delay(1000);
 
   // Connect to the websocket server
-  if (client.connect(host, 80)) {
+  if (client.connect(host, 6789)) {
     Serial.println("Connected");
   } else {
     Serial.println("Connection failed.");
@@ -48,7 +48,7 @@ void setup() {
       // Hang on failure
     }
   }
-/*
+
   // Handshake with the server
   webSocketClient.path = path;
   webSocketClient.host = host;
@@ -60,19 +60,27 @@ void setup() {
       // Hang on failure
     }
   }
-  */
+ 
 }
 
 void loop() {
+  String data;
   // put your main code here, to run repeatedly:
   if (client.connected()) {
+    webSocketClient.getData(data);
+    if (data.length() > 0) {
+      Serial.print("Received data: ");
+      Serial.println(data);
+    }
+    
     int v1 = digitalRead(valve1);
     int v2 = digitalRead(valve2);
     int v3 = digitalRead(valve3);
   
     String data = String(v1) + " " + String(v2) + " " + String(v3);
+    Serial.println(data);
     webSocketClient.sendData(data);
-    delay(250);
+    delay(100);
   } else {
     Serial.println("Client disconnected.");
     while (1) {
