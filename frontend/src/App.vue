@@ -8,8 +8,8 @@
     </v-toolbar>
 
     <v-content>
-      <!--<sheet/>
-      <dashboard/>-->
+      <sheet/>
+      <dashboard/>
       <Valves/>
     </v-content>
   </v-app>
