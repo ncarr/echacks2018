@@ -5,7 +5,7 @@ import asyncio
 import websockets
 
 # Get the midi file
-songFile = mido.MidiFile('Music/don\'t_stop_believing.mid')
+songFile = mido.MidiFile('Music/birdland.mid')
 sockets = set()
 valves = ''
 
