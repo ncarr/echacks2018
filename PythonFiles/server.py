@@ -42,6 +42,9 @@ async def counter(websocket, path):
         async for message in websocket:
             global valves
             valves = message
+            print("Current: " + valves)
+            print("Expected: " + expected)
+            print("Matches? " + (valves == expected))
             if valves == expected:
                 currentNoteAccuracy.append(1)
             else:
