@@ -14,22 +14,26 @@ valves = ''
 # Load the fingerings file for the baritone
 with open('fingerings.json') as json_file:
     fingerings = json.load(json_file)
+
+
 async def iterateOverFile():
-  # Iterate over messages in it
-  for msg in songFile:
-      if msg.type == 'note_on' and msg.velocity == 0:
-          await asyncio.sleep(msg.time)
-          print('current ' + valves)
-          print('expected ' + fingerings[str(msg.note)])
+    # Iterate over messages in it
+    for msg in songFile:
+        if msg.type == 'note_on' and msg.velocity == 0:
+            await asyncio.sleep(msg.time)
+            print('current ' + valves)
+            print('expected ' + fingerings[str(msg.note)])
+
 
 async def counter(websocket, path):
-  sockets.add(websocket)
-  try:
-      async for message in websocket:
-        global valves
-        valves = message
-  except:
-    pass
+    sockets.add(websocket)
+    try:
+        async for message in websocket:
+            global valves
+            valves = message
+    except:
+        pass
+
 
 asyncio.get_event_loop().run_until_complete(
     websockets.serve(counter, '0.0.0.0', 6789))
