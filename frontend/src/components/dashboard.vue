@@ -2,7 +2,7 @@
   <div style="text-align:center">
   <h1 class="headline">Dashboard</h1>
   <p> Welcome to the Sensor Baritone </p>
-  <button type="button"> Enter Name and Music </button>
+  <v-btn color="info">Submit Name and Music</v-btn>
   </div>
 
 </template>
