@@ -55,6 +55,8 @@ async def counter(websocket, path):
                     currentNoteAccuracy.append(1)
                 else:
                     currentNoteAccuracy.append(0)
+            for socket in sockets:
+              socket.send(message)
     except Exception as e:
         print(e)
 
