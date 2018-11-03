@@ -34,6 +34,7 @@ async def iterate_over_file(midi_file):
             try:
                 accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
                 songAccuracy.append(accuracy_percentage)
+                currentNoteAccuracy.clear()
             except ZeroDivisionError:
                 pass
     songActive = False
@@ -54,8 +55,8 @@ async def counter(websocket, path):
                     currentNoteAccuracy.append(1)
                 else:
                     currentNoteAccuracy.append(0)
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
 
 asyncio.get_event_loop().run_until_complete(
