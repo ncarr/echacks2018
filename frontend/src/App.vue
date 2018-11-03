@@ -17,17 +17,20 @@
 
     <v-content>
       <Valves/>
+      <dashboard/>
     </v-content>
   </v-app>
 </template>
 
 <script>
 import Valves from './components/Valves'
+import dashboard from './components/dashboard'
 
 export default {
   name: 'App',
   components: {
-    Valves
+    Valves,
+    dashboard
   },
   data () {
     return {
