@@ -17,9 +17,9 @@
             type="number"
           ></v-text-field>
         </div>
-        <v-button>Start</v-button>
+        <v-btn color="green" @click="start()">Start</v-btn>
       </v-layout>
-      <div id="countdown"></div>
+      <div id="countdown">{{num}}</div>
       <div id="container">
           <div id="music"></div>
           <div id="line"></div>
@@ -39,6 +39,7 @@
       stave: null,
       renderer: null,
       div: null,
+      num: "on standby..."
     }),
     props: ['song'],
     mounted(){
@@ -352,10 +353,10 @@
 
         // Render voice
         voice.draw(this.context, this.stave);
-        ties.forEach((t) => {t.setContext(this.context).draw()})
+        ties.forEach((t) => {t.setContext(this.context).draw()});
         //group
         this.context.closeGroup();
-        this.context.svg.appendChild(this.group)
+        this.context.svg.appendChild(this.group);
 
         // Scroll
         /*
@@ -363,6 +364,21 @@
             music.scrollLeft
         }*/
         }
+    }, methods:{
+      start(){
+        this.num = "3";
+        setTimeout(() => {
+          this.num = "2";
+        }, 1000);
+        setTimeout(() => {
+          this.num = "1";
+        }, 2000);
+        setTimeout(() => {
+          this.num = "yeet";
+          $( "#music" ).css( "transform", "translateX(-2000px)" );
+        }, 3000);
+
+      }
     }
   }
 </script>
@@ -399,9 +415,6 @@
     position: absolute;
     height: 100%;
     transition: transform 5s linear;
-  }
-  #music:hover{
-    transform: translateX(-2000px);
   }
 
   #container{
