@@ -18,9 +18,6 @@
           ></v-text-field>
         </div>
       </v-layout>
-      <div id="pages" class="row">
-        <h1 class="font-weight-light title">Page 1 of 1</h1>
-      </div>
       <div id="overflow">
           <div id="music"></div>
           <div id="line"></div>
@@ -141,7 +138,7 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (tieToLastNote !== Null) {
+                        if (tieToLastNote !== null) {
                             ties.push(new VF.StaveTie({
                                 first_note: tieToLastNote,
                                 last_note: currentNote,
@@ -192,7 +189,7 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (tieToLastNote !== Null) {
+                        if (tieToLastNote !== null) {
                             ties.push(new VF.StaveTie({
                                 first_note: tieToLastNote,
                                 last_note: currentNote,
@@ -263,7 +260,7 @@
                         console.log(noteDurations);
                         for (let i = 0; i < noteDurations.length - 1; i++) {
                             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                            if (tieToLastNote !== Null) {
+                            if (tieToLastNote !== null) {
                                 ties.push(new VF.StaveTie({
                                     first_note: tieToLastNote,
                                     last_note: currentNote,
@@ -300,7 +297,7 @@
                 console.log("Rest");
             }
 
-            if (tieToLastNote !== Null) {
+            if (tieToLastNote !== null) {
                 ties.push(new VF.StaveTie({
                     first_note: tieToLastNote,
                     last_note: currentNote,
@@ -308,7 +305,7 @@
                     last_indices: [0]
                 }));
             }
-            tieToLastNote = Null;
+            tieToLastNote = null;
 
             notes.push(currentNote);
             if (barFlag || timeInBar === 2) {
