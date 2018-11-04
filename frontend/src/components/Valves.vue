@@ -7,6 +7,9 @@
         <v-btn fab dark large :color="valve2 ? 'blue': 'purple'">2</v-btn>
         <v-btn fab dark large :color="valve3 ? 'blue': 'purple'">3</v-btn>
     </v-layout>
+    <v-layout row>
+      <v-btn dark :color="volume ? 'blue' : 'purple'">Now playing</v-btn>
+    </v-layout>
 </div>
 
 </template>
@@ -17,7 +20,8 @@
     props: {
       valve1: Boolean,
       valve2: Boolean,
-      valve3: Boolean
+      valve3: Boolean,
+      volume: Boolean
     }
   }
 

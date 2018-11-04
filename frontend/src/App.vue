@@ -10,7 +10,7 @@
     <v-content>
       <v-select :items="items" v-model="songFile" />
       <sheet :song="songJson"/>
-      <Valves :valve1="valve1" :valve2="valve2" :valve3="valve3" />
+      <Valves :valve1="valve1" :valve2="valve2" :valve3="valve3" :volume="volume" />
       <!--<dashboard/>-->
     </v-content>
   </v-app>
