@@ -82,8 +82,7 @@ async def counter(websocket, path):
                     currentNoteAccuracy.append(1)
                 else:
                     currentNoteAccuracy.append(0)
-            for socket in sockets:
-                await socket.send(message)
+            await asyncio.wait([socket.send(message) for socket in sockets])
     except Exception as e:
         print(e)
 
