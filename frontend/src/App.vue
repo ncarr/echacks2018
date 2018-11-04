@@ -9,8 +9,8 @@
 
     <v-content>
       <v-select :items="items" v-model="songFile" />
-      <sheet :song="songJson"/>
-      <Valves :valve1="expectedValve1" :valve2="expectedValve2" :valve3="expectedValve3" expected />
+      <sheet :song="songJson" @start="ws.send('start')"/>
+      <Valves :valve1="expectedValve1" :valve2="expectedValve2" :valve3="expectedValve3" expected :current="current" />
       <Valves :valve1="valve1" :valve2="valve2" :valve3="valve3" :volume="volume" />
       <!--<dashboard/>-->
     </v-content>

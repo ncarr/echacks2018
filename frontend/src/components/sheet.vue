@@ -374,6 +374,7 @@
           this.num = "1";
         }, 2000);
         setTimeout(() => {
+        this.$emit('start');
           this.num = "yeet";
           $( "#music" ).css( "transform", "translateX(-2000px)" );
         }, 3000);
