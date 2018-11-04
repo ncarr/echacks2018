@@ -67,7 +67,7 @@ export default {
   },
   mounted() {
       var scope = this;
-      this.ws = new WebSocket("ws://192.168.9.28:6789");
+      this.ws = new WebSocket("ws://localhost:6789");
 
       this.ws.onopen = function() {
         scope.ws.send('json ' + scope.songFile);
