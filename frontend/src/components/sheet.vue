@@ -328,7 +328,7 @@
 
         // Render voice
         voice.draw(this.context, this.stave);
-        ties.forEach(function(t) {t.setContext(this.context).draw()})
+        ties.forEach((t) => {t.setContext(this.context).draw()})
         //group
         this.context.closeGroup();
         this.context.svg.appendChild(this.group)
