@@ -25,7 +25,9 @@
       <div id="pages" class="row">
         <h1 class="font-weight-light title">Page 1 of 1</h1>
       </div>
-      <div id="music"></div>
+      <div id="overflow">
+          <div id="music"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,16 +49,6 @@
         // Create an SVG renderer and attach it to the DIV element named "boo".
         var div = document.getElementById("music")
         var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
-        // Size our svg:
-        renderer.resize(div.clientWidth, div.clientHeight);
-        // And get a drawing context:
-        var context = renderer.getContext();
-        // Create a stave at position 10, 40 of width 400 on the canvas.
-        var stave = new VF.Stave(10, 40, div.clientWidth-20);
-        // Add a clef and time signature.
-        stave.addClef("bass").addTimeSignature("4/4");
-        // Connect it to the rendering context and draw!
-        stave.setContext(context).draw();
 
         var notes = [];
 
@@ -271,17 +263,28 @@
         var voice = new VF.Voice({num_beats: totalBeats * 2,  beat_value: 4});
         voice.addTickables(notes);
 
+        // Size our svg:
+        renderer.resize(notes.length*50, div.clientHeight);
+        // And get a drawing context:
+        var context = renderer.getContext();
+        // Create a stave at position 10, 40 of width 400 on the canvas.
+        var stave = new VF.Stave(10, 40, notes.length*50);
+        // Add a clef and time signature.
+        stave.addClef("bass").addTimeSignature("4/4");
+        // Connect it to the rendering context and draw!
+        stave.setContext(context).draw();
+
         // Format and justify the notes to 400 pixels.
-        var formatter = new VF.Formatter().joinVoices([voice]).format([voice], div.clientWidth);
+        var formatter = new VF.Formatter().joinVoices([voice]).format([voice], notes.length*50);
 
         //Create group
-        const group = context.openGroup();
+        //const group = context.openGroup();
 
         // Render voice
         voice.draw(context, stave);
 
         //Remove group when needed
-        context.svg.removeChild(group);
+        //context.svg.removeChild(group);
 
         // Scroll
         /*
@@ -326,8 +329,16 @@
   }
 
   #music{
-    width: 100%;
+    overflow: visible;
     height: 100%;
+    transition: transform 5s linear;
+  }
+  #music:hover{
+    transform: translateX(-2000px);
+  }
+
+  #overflow{
+    width: 100%;
   }
 
   #bg{
