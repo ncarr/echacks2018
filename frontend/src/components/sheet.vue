@@ -28,32 +28,63 @@
 </template>
 
 <script>
+  import song1 from './assets/notes'
   export default {
     data: () => ({
       items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       bpm: 120
     }),
     mounted() {
+      var json = [{"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 0, "time": 1.0}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 0.5}, {"note": 51, "time": 0.25}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.75}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 2.25}]
+      var song = JSON.parse(json);
+
+      var dict = $.getJSON('../assets/notes.json');
+
       var VF = Vex.Flow;
 
       // Create an SVG renderer and attach it to the DIV element named "boo".
       var div = document.getElementById("music")
       var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
-
       // Size our svg:
       renderer.resize(div.clientWidth, div.clientHeight);
-
       // And get a drawing context:
       var context = renderer.getContext();
-
       // Create a stave at position 10, 40 of width 400 on the canvas.
       var stave = new VF.Stave(10, 40, div.clientWidth-20);
-
       // Add a clef and time signature.
-      stave.addClef("treble").addTimeSignature("4/4");
-
+      stave.addClef("bass").addTimeSignature("4/4");
       // Connect it to the rendering context and draw!
       stave.setContext(context).draw();
+
+      var notes = [];
+
+      for(i = 0; i < song.length(); i++){
+        var note = new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
+        addAccidental(0, new VF.Accidental("b")),
+      }
+      var notes = [
+      // A quarter-note C.
+      new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
+      addAccidental(0, new VF.Accidental("b")),
+      // A quarter-note D.
+      new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
+      addAccidental(0, new VF.Accidental("#")),
+      // A quarter-note rest. Note that the key (b/4) specifies the vertical
+      // position of the rest.
+      new VF.StaveNote({clef: "bass", keys: ["b/3"], duration: "qr" }),
+      // A C-Major chord.
+      new VF.StaveNote({clef: "bass", keys: ["c/3", "e/3", "g/3"], duration: "q" })
+    ];
+
+    // Create a voice in 4/4 and add above notes
+    var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+    voice.addTickables(notes);
+
+    // Format and justify the notes to 400 pixels.
+    var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+    // Render voice
+    voice.draw(context, stave);
     }
   }
 </script>
