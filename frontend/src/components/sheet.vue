@@ -40,7 +40,8 @@
       renderer: null,
       div: null,
       num: "on standby...",
-      staveX: null
+      staveX: null,
+      totalBeats: null
     }),
     props: ['song'],
     mounted(){
@@ -76,7 +77,7 @@
         let tieToLastNote;
 
         let timeInBar = 0;
-        let totalBeats = 0;
+        this.totalBeats = 0;
 
         //ugly hack
         let barFlag = false;
@@ -85,7 +86,7 @@
             //Drawing notes
             var noteName = dict[song[i].note];
             var note = song[i];
-            totalBeats += note.time;
+            this.totalBeats += note.time;
             console.log(noteName);
 
             const noteMap = {
@@ -327,9 +328,9 @@
         }
         console.log("Added all notes. Moving on to voice.");
 
-        console.log("Total beats in piece: " + (totalBeats * 2).toString());
+        console.log("Total beats in piece: " + (this.totalBeats * 2).toString());
         // Create a voice in 4/4 and add above notes
-        var voice = new VF.Voice({num_beats: totalBeats * 2,  beat_value: 4});
+        var voice = new VF.Voice({num_beats: this.totalBeats * 2,  beat_value: 4});
         voice.addTickables(notes);
 
         console.log("notes length:");
@@ -380,7 +381,9 @@
           this.num = "yeet";
           $( "#music" ).css( "transform", "translateX(-" + (this.staveX).toString() + "px)" );
           console.log(this.staveX);
-          $( "#music" ).css( "transition", "transform 5s linear" );
+          console.log(this.totalBeats);
+          console.log(this.bpm);
+          $( "#music" ).css( "transition", "transform " + (this.totalBeats/this.bpm*120).toString() + "s linear" );
         }, 3000);
 
       }
@@ -432,8 +435,7 @@
   #line{
     border-left: 6px solid green;
     height: 100px;
-    top: 210px;
+    top: 220px;
     position: absolute;
-    left: 60px;
   }
 </style>
