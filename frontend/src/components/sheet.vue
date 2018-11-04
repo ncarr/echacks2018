@@ -284,6 +284,11 @@
                 if (duration == 1) {
                     notes.push(new VF.BarNote());
                 }
+            if (noteName == "c/5") {
+                noteName = "d/3";
+                duration += "r";
+            }
+
             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
 
             if (duration.charAt(duration.length - 1) == 'd') {
@@ -293,9 +298,6 @@
             if(noteName.length === 4){
                 //Flat
             currentNote.addAccidental(0, new VF.Accidental("b"));
-            } else {
-                //rest
-                console.log("Rest");
             }
 
             if (tieToLastNote) {
