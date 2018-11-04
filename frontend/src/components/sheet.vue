@@ -17,7 +17,9 @@
             type="number"
           ></v-text-field>
         </div>
+        <v-button>Start</v-button>
       </v-layout>
+      <div id="countdown"></div>
       <div id="container">
           <div id="music"></div>
           <div id="line"></div>
