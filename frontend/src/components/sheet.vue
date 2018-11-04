@@ -61,30 +61,17 @@
       for(let i = 0; i < song.length; i++){
         var note = dict[song[i].note];
         console.log(note);
+        //Flat
         if(note.length == 4){
           notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }).
           addAccidental(0, new VF.Accidental("b")));
-        } else if(note.length == 3) {
+        } else if(note.length == 3) { //Regular note
           notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }));
-        } else {
+        } else { //flat
           notes.push(new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "qr" }));
         }
       }
-      /*
-      var notes = [
-      // A quarter-note C.
-      new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
-      addAccidental(0, new VF.Accidental("b")),
-      // A quarter-note D.
-      new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
-      addAccidental(0, new VF.Accidental("#")),
-      // A quarter-note rest. Note that the key (b/4) specifies the vertical
-      // position of the rest.
-      new VF.StaveNote({clef: "bass", keys: ["b/3"], duration: "qr" }),
-      // A C-Major chord.
-      new VF.StaveNote({clef: "bass", keys: ["c/3", "e/3", "g/3"], duration: "q" })
-    ];
-*/
+
     // Create a voice in 4/4 and add above notes
     var voice = new VF.Voice({num_beats: song.length,  beat_value: 4});
     voice.addTickables(notes);
