@@ -17,10 +17,6 @@
             type="number"
           ></v-text-field>
         </div>
-        <v-spacer></v-spacer>
-        <div id="select">
-          <v-select :items="items" label="Music" ></v-select>
-        </div>
       </v-layout>
       <div id="pages" class="row">
         <h1 class="font-weight-light title">Page 1 of 1</h1>
@@ -253,7 +249,7 @@
             currentNote.addAccidental(0, new VF.Accidental("b"));
             } else {
                 //rest
-                currentNote.duration = currentNote.duration + "r"
+                currentNote.duration = currentNote.duration + "r";
             }
             notes.push(currentNote);
             if (barFlag || timeInBar === 2) {
@@ -281,7 +277,7 @@
         voice.draw(context, stave);
 
         //Remove group when needed
-        context.svg.removeChild(group);
+        //context.svg.removeChild(group);
 
         // Scroll
         /*
@@ -305,16 +301,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
   }
 
   #slider{
     width: 15%;
     margin-left: 2%;
-  }
-
-  #select{
-    width:10%;
   }
 
   #options{
@@ -327,10 +318,8 @@
 
   #music{
     width: 100%;
-    height: 100%;
   }
 
   #bg{
-    height: 100%;
   }
 </style>
