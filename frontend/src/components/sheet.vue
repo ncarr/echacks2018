@@ -222,6 +222,7 @@
                         duration += "r";
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                     }
+                    tieToLastNote = currentNote;
                     notes.push(currentNote);
                     console.log("aaaa");
                     let secondNoteLength = note.time - firstNoteLength;
