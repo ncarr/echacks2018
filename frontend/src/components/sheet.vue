@@ -83,14 +83,13 @@
         // notes :hd :qd :8d :16d :32d :64d (Adding a d for dotted notes)
         let currentNote = new VF.StaveNote({clef: "bass", keys: [note]});
 
-        if (currentBeats + note.time <= 2) {
+        if (currentBeats + note.time < 2) {
             //Ensure there's enough room left in the current bar
             currentBeats += note.time;
             if (noteMap[note.time] !== undefined) {
                 //Straight add the note, nothing else is required
                 duration = noteMap[note.time];
                 currentNote.duration = duration;
-                notes.push(currentNote);
             } else if (noteMap[Math.floor(note.time)] !== undefined) {
                 //The note is not one of the standard lengths and is either dotted or tied
                 duration = noteMap[Math.floor(note.time)];
@@ -98,7 +97,6 @@
                     //Dotted note
                     duration.append("d");
                     currentNote.duration = duration;
-                    notes.push(currentNote);
                 } else if (noteMap[note.time % 1] !== undefined) {
                     //TODO This is a tied note. I have no idea how to deal with this
                     //You need to tie the Math.floor(note.time) with note.time % 1
@@ -109,21 +107,24 @@
                 console.log(note)
             }
         } else {
-            note.time -= (2 - currentBeats);
-            currentBeats += (2 - currentBeats);
+            let firstNoteLength = 2-currentBeats;
+            let secondNoteLength = note.length - firstNoteLength;
+            currentBeats += firstNoteLength;
+            //We're at the end of the measure. Add the last note and then move on
+
             //todo This is a tied note. I have no idea how to deal with this
             //note.time is remaining time on next note that needs to be carried on
         }
 
         //Flat
-        if(note.length == 4){
-          notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }).
-          addAccidental(0, new VF.Accidental("b")));
-        } else if(note.length == 3) { //Regular note
-          notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }));
-        } else { //flat
-          notes.push(new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "qr" }));
+        if(note.length === 4){
+            //Flat
+          currentNote.addAccidental(0, new VF.Accidental("b"));
+        } else {
+            //rest
+            currentNote.duration = currentNote.duration + "r"
         }
+        notes.push(currentNote);
 
         //Measure bars
         if((i+1)%4 == 0){
