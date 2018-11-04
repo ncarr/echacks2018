@@ -11,6 +11,10 @@
     <v-layout row v-if="!expected">
       <v-btn dark :color="volume ? 'blue' : 'purple'">Now playing</v-btn>
     </v-layout>
+    <v-layout row v-if="current">
+      <h2>Accuracy</h2>
+      <p v-text="current.accuracy" />
+    </v-layout>
 </div>
 
 </template>
@@ -23,7 +27,8 @@
       valve2: Boolean,
       valve3: Boolean,
       volume: Boolean,
-      expected: Boolean
+      expected: Boolean,
+      current: Object
     }
   }
 

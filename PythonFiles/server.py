@@ -84,8 +84,9 @@ async def counter(websocket, path):
         async for message in websocket:
             if message.startswith('json'):
                 readMidi(message[5:])
-                asyncio.get_event_loop().create_task(iterate_over_file(songFile))
                 await websocket.send(midiJSON)
+            elif message == 'start':
+                asyncio.get_event_loop().create_task(iterate_over_file(songFile))
             else:
                 global valves
                 print("message " + message)
