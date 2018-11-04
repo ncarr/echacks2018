@@ -71,7 +71,7 @@
 
         let notes = [];
         let ties = [];
-        let currentTies = [];
+        let tieToLastNote;
 
         let timeInBar = 0;
         let totalBeats = 0;
@@ -140,9 +140,15 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (i === 0) {
-                            currentTies.push(currentNote);
+                        if (tieToLastNote !== Null) {
+                            ties.push(new VF.StaveTie({
+                                first_note: tieToLastNote,
+                                last_note: currentNote,
+                                first_indices: [0],
+                                last_indices: [0]
+                            }));
                         }
+                        tieToLastNote = currentNote;
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -185,9 +191,15 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (i === 0) {
-                            currentTies.push(currentNote);
+                        if (tieToLastNote !== Null) {
+                            ties.push(new VF.StaveTie({
+                                first_note: tieToLastNote,
+                                last_note: currentNote,
+                                first_indices: [0],
+                                last_indices: [0]
+                            }));
                         }
+                        tieToLastNote = currentNote;
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -251,9 +263,15 @@
                         console.log(noteDurations);
                         for (let i = 0; i < noteDurations.length - 1; i++) {
                             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                            if (i === 0) {
-                                currentTies.push(currentNote);
+                            if (tieToLastNote !== Null) {
+                                ties.push(new VF.StaveTie({
+                                    first_note: tieToLastNote,
+                                    last_note: currentNote,
+                                    first_indices: [0],
+                                    last_indices: [0]
+                                }));
                             }
+                            tieToLastNote = currentNote;
                             notes.push(currentNote);
                         }
                         duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -282,19 +300,17 @@
                 console.log("Rest");
             }
 
-            if (currentTies.length > 0) {
-                currentTies.push(currentNote);
-            }
-            notes.push(currentNote);
-            if (currentTies.length >= 2) {
+            if (tieToLastNote !== Null) {
                 ties.push(new VF.StaveTie({
-                    first_note: currentTies[0],
-                    last_note: currentTies[currentTies.length - 1],
+                    first_note: tieToLastNote,
+                    last_note: currentNote,
                     first_indices: [0],
                     last_indices: [0]
                 }));
             }
-            currentTies = [];
+            tieToLastNote = Null;
+
+            notes.push(currentNote);
             if (barFlag || timeInBar === 2) {
                 notes.push(new VF.BarNote());
                 timeInBar = 0;
