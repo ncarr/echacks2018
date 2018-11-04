@@ -8,6 +8,7 @@ import websockets
 songFile = mido.MidiFile('Music/birdland.mid')
 sockets = set()
 valves = ''
+volume = 0
 
 # Convert the midi file into a JSON that we can send to the Vue server via socket
 midiList = []
@@ -69,23 +70,27 @@ async def counter(websocket, path):
     sockets.add(websocket)
     try:
         async for message in websocket:
-            global valves
-            valves = message
-            if songActive:
-                print("Current: " + valves)
-                print("Expected: " + expected)
-                # Log whether the player hit the note
-                if valves == expected:
-                    currentNoteAccuracy.append(1)
-                else:
-                    currentNoteAccuracy.append(0)
-            for socket in sockets:
-                socket.send(message)
+            if message == 'json':
+                await websocket.send(midiJSON)
+            else:
+                global valves
+                print("message " + message)
+                valves = message[0:5]
+                volume = int(message[6:])
+                if songActive:
+                    print("Current: " + valves)
+                    print("Expected: " + expected)
+                    # Log whether the player hit the note
+                    if valves == expected:
+                        currentNoteAccuracy.append(1)
+                    else:
+                        currentNoteAccuracy.append(0)
+                await asyncio.wait([socket.send(message) for socket in sockets])
     except Exception as e:
         print(e)
 
 
-asyncio.get_event_loop().run_until_complete(
-    websockets.serve(counter, '0.0.0.0', 6789))
-asyncio.get_event_loop().run_until_complete(iterate_over_file(songFile))
+asyncio.get_event_loop().run_until_complete(asyncio.gather(
+    websockets.serve(counter, '0.0.0.0', 6789),
+    iterate_over_file(songFile)))
 asyncio.get_event_loop().run_forever()
