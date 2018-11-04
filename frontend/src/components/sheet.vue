@@ -58,9 +58,48 @@
 
       var notes = [];
 
+      let currentBeats = 2;
+
       for(let i = 0; i < song.length; i++){
         var note = dict[song[i].note];
         console.log(note);
+
+        const noteMap = {
+            0.25 : "8",
+            0.5 : "q",
+            1 : "h",
+            2 : "2"
+        };
+
+        let duration;
+
+        //Determine note length
+        //Note that one bar = 2s
+        //notes :w :h :q :8 :16 :32 :64
+        // notes :hd :qd :8d :16d :32d :64d (Adding a d for dotted notes)
+        if (currentBeats + note.time <= 2) {
+            //Ensure there's enough room left in the current bar
+            currentBeats += note.time;
+            if (noteMap[note.time] !== undefined) {
+                duration = noteMap[note.time];
+            } else if (noteMap[Math.floor(note.time)] !== undefined) {
+                duration = noteMap[Math.floor(note.time)];
+                if (note.time % 1 === noteMap[Math.floor(note.time)]/2) {
+                    duration.append("d");
+                } else if (noteMap[note.time % 1] !== undefined) {
+                    //TODO This is a tied note. I have no idea how to deal with this
+                    //You need to tie the Math.floor(note.time) with note.time % 1
+                }
+            } else {
+                //I don't know what cases go here. TODO log and find out
+            }
+        } else {
+            note.time -= (2 - currentBeats);
+            currentBeats += (2 - currentBeats);
+            //todo This is a tied note. I have no idea how to deal with this
+            //note.time is remaining time on next note that needs to be carried on
+        }
+
         if(note.length == 4){
           notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }).
           addAccidental(0, new VF.Accidental("b")));
