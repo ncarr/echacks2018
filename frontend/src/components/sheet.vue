@@ -391,6 +391,7 @@
 
   #music{
     overflow: visible;
+    position: absolute;
     height: 100%;
     transition: transform 5s linear;
   }
@@ -400,6 +401,7 @@
 
   #container{
     width: 100%;
+    height: 200px;
   }
 
   #bg{
@@ -408,8 +410,8 @@
   #line{
     border-left: 6px solid green;
     height: 100px;
+    top: 210px;
     position: absolute;
-    left: 40;
-    top: 10;
+    left: 60px;
   }
 </style>
