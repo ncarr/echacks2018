@@ -68,10 +68,11 @@ async def iterate_over_file(midi_file):
                     songAccuracy.append(accuracy_percentage)
                     currentNoteAccuracy.clear()
                 except ZeroDivisionError:
-                    pass
+                    await broadcast(json.dumps({'type': 'note', 'note': message.note, 'time': noteTime}))
             elif message.velocity == 80:
                 await asyncio.sleep(message.time)
-                await broadcast(json.dumps({'type': 'note', 'note': 0, 'time': noteTime}))
+                if noteTime != 0:
+                    await broadcast(json.dumps({'type': 'note', 'note': 0, 'time': noteTime}))
                 currentNoteAccuracy.clear()
     songActive = False
     print(songAccuracy)
