@@ -138,7 +138,7 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (tieToLastNote !== null) {
+                        if (tieToLastNote) {
                             ties.push(new VF.StaveTie({
                                 first_note: tieToLastNote,
                                 last_note: currentNote,
@@ -189,7 +189,7 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                        if (tieToLastNote !== null) {
+                        if (tieToLastNote) {
                             ties.push(new VF.StaveTie({
                                 first_note: tieToLastNote,
                                 last_note: currentNote,
@@ -260,7 +260,7 @@
                         console.log(noteDurations);
                         for (let i = 0; i < noteDurations.length - 1; i++) {
                             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
-                            if (tieToLastNote !== null) {
+                            if (tieToLastNote) {
                                 ties.push(new VF.StaveTie({
                                     first_note: tieToLastNote,
                                     last_note: currentNote,
@@ -297,7 +297,7 @@
                 console.log("Rest");
             }
 
-            if (tieToLastNote !== null) {
+            if (tieToLastNote) {
                 ties.push(new VF.StaveTie({
                     first_note: tieToLastNote,
                     last_note: currentNote,
@@ -305,7 +305,7 @@
                     last_indices: [0]
                 }));
             }
-            tieToLastNote = null;
+            tieToLastNote = false;
 
             notes.push(currentNote);
             if (barFlag || timeInBar === 2) {
