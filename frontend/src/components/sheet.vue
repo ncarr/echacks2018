@@ -69,7 +69,9 @@
 
         var VF = Vex.Flow;
 
-        var notes = [];
+        let notes = [];
+        let ties = [];
+        let currentTies = [];
 
         let timeInBar = 0;
         let totalBeats = 0;
@@ -138,6 +140,9 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                        if (i === 0) {
+                            currentTies.push(currentNote);
+                        }
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -180,6 +185,9 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                        if (i === 0) {
+                            currentTies.push(currentNote);
+                        }
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -243,6 +251,9 @@
                         console.log(noteDurations);
                         for (let i = 0; i < noteDurations.length - 1; i++) {
                             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                            if (i === 0) {
+                                currentTies.push(currentNote);
+                            }
                             notes.push(currentNote);
                         }
                         duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -258,6 +269,7 @@
                     notes.push(new VF.BarNote());
                 }
             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
+
             if (duration.charAt(duration.length - 1) == 'd') {
                 currentNote.addDotToAll();
             }
@@ -267,9 +279,22 @@
             currentNote.addAccidental(0, new VF.Accidental("b"));
             } else {
                 //rest
-                currentNote.duration = currentNote.duration + "r";
+                console.log("Rest");
+            }
+
+            if (currentTies.length > 0) {
+                currentTies.push(currentNote);
             }
             notes.push(currentNote);
+            if (currentTies.length >= 2) {
+                ties.push(new VF.StaveTie({
+                    first_note: currentTies[0],
+                    last_note: currentTies[currentTies.length - 1],
+                    first_indices: [0],
+                    last_indices: [0]
+                }));
+            }
+            currentTies = [];
             if (barFlag || timeInBar === 2) {
                 notes.push(new VF.BarNote());
                 timeInBar = 0;
@@ -281,7 +306,6 @@
 
         console.log("Total beats in piece: " + (totalBeats * 2).toString());
         // Create a voice in 4/4 and add above notes
-            //todo fix
         var voice = new VF.Voice({num_beats: totalBeats * 2,  beat_value: 4});
         voice.addTickables(notes);
 
@@ -304,7 +328,7 @@
 
         // Render voice
         voice.draw(this.context, this.stave);
-
+        ties.forEach(function(t) {t.setContext(this.context).draw()})
         //group
         this.context.closeGroup();
         this.context.svg.appendChild(this.group)
