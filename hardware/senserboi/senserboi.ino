@@ -100,7 +100,7 @@ void loop() {
     String result = String(v1) + " " + String(v2) + " " + String(v3) + " " + String(loud);
     Serial.println(result);
     
-    webSocketClient.sendData(data);
+    webSocketClient.sendData(result);
     delay(100);
   } else {
     Serial.println("Client disconnected.");
