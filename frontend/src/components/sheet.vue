@@ -39,13 +39,14 @@
       stave: null,
       renderer: null,
       div: null,
-      num: "on standby..."
+      num: "on standby...",
+      staveX: null
     }),
     props: ['song'],
     mounted(){
       // Create an SVG renderer and attach it to the DIV element named "boo".
       var VF = Vex.Flow;
-      this.div = document.getElementById("music")
+      this.div = document.getElementById("music");
       this.renderer = new VF.Renderer(this.div, VF.Renderer.Backends.SVG);
       // Size our svg:
       this.renderer.resize(this.div.clientWidth, this.div.clientHeight);
@@ -334,12 +335,14 @@
         console.log("notes length:");
         console.log(notes.length);
         console.log(notes.length*50);
+
+        this.staveX = notes.length*50;
         // Size our svg:
-        this.renderer.resize(notes.length*50 + 50, this.div.clientHeight);
+        this.renderer.resize(this.staveX + 50, this.div.clientHeight);
         // And get a drawing context:
         var context = this.renderer.getContext();
         // Create a stave at position 10, 40 of width 400 on the canvas.
-        var stave = new VF.Stave(10, 40, notes.length*50);
+        var stave = new VF.Stave(10, 40, this.staveX);
         // Add a clef and time signature.
         stave.addClef("bass").addTimeSignature("4/4");
         // Connect it to the rendering context and draw!
@@ -375,7 +378,9 @@
         }, 2000);
         setTimeout(() => {
           this.num = "yeet";
-          $( "#music" ).css( "transform", "translateX(-2000px)" );
+          $( "#music" ).css( "transform", "translateX(-" + (this.staveX).toString() + "px)" );
+          console.log(this.staveX);
+          $( "#music" ).css( "transition", "transform 5s linear" );
         }, 3000);
 
       }
@@ -414,7 +419,6 @@
     overflow: visible;
     position: absolute;
     height: 100%;
-    transition: transform 5s linear;
   }
 
   #container{
