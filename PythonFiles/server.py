@@ -4,31 +4,37 @@ import json
 import asyncio
 import websockets
 
-# Get the midi file
-songFile = mido.MidiFile('Music/birdland.mid')
 sockets = set()
 valves = ''
 volume = 0
+songFile = mido.MidiFile('Music/Birdland.mid')
+midiJSON = None
 
-# Convert the midi file into a JSON that we can send to the Vue server via socket
-midiList = []
-for msg in songFile:
-    if msg.type == 'note_on':
-        noteTime = round(msg.time*4)/4
-        if msg.velocity == 0:
-            midiList.append({
-                'note': msg.note,
-                # Round note to nearest .25 because musescore is odd
-                'time': noteTime,
-            })
-        elif msg.velocity == 80 and noteTime:
-            midiList.append({
-                'note': 00,
-                'time': noteTime
-            })
-# Convert it to JSON
-midiJSON = json.dumps(midiList)
-print(midiJSON)
+def readMidi(fileName):
+    global songFile
+    global midiJSON
+    # Get the midi file
+    songFile = mido.MidiFile('Music/' + fileName)
+
+    # Convert the midi file into a JSON that we can send to the Vue server via socket
+    midiList = []
+    for msg in songFile:
+        if msg.type == 'note_on':
+            noteTime = round(msg.time*4)/4
+            if msg.velocity == 0:
+                midiList.append({
+                    'note': msg.note,
+                    # Round note to nearest .25 because musescore is odd
+                    'time': noteTime,
+                })
+            elif msg.velocity == 80 and noteTime:
+                midiList.append({
+                    'note': 00,
+                    'time': noteTime
+                })
+    # Convert it to JSON
+    midiJSON = json.dumps(midiList)
+    print(midiJSON)
 
 # For reference = Bb is note 46, High Bb is 58, Middle C is 60
 # Load the fingerings file for the baritone
@@ -75,7 +81,9 @@ async def counter(websocket, path):
     sockets.add(websocket)
     try:
         async for message in websocket:
-            if message == 'json':
+            if message.startswith('json'):
+                readMidi(message[5:])
+                asyncio.get_event_loop().create_task(iterate_over_file(songFile))
                 await websocket.send(midiJSON)
             else:
                 global valves
@@ -104,7 +112,5 @@ async def sendMessage(socket, message):
         sockets.discard(socket)
 
 
-asyncio.get_event_loop().run_until_complete(asyncio.gather(
-    websockets.serve(counter, '0.0.0.0', 6789),
-    iterate_over_file(songFile)))
+asyncio.get_event_loop().run_until_complete(websockets.serve(counter, '0.0.0.0', 6789))
 asyncio.get_event_loop().run_forever()
