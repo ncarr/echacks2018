@@ -235,6 +235,9 @@
                     notes.push(new VF.BarNote());
                 }
             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
+            if (duration.charAt(duration.length - 1) == 'd') {
+                currentNote.addDotToAll();
+            }
             //Flat
             if(noteName.length === 4){
                 //Flat
