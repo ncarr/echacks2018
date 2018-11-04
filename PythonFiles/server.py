@@ -85,9 +85,15 @@ async def counter(websocket, path):
                         currentNoteAccuracy.append(1)
                     else:
                         currentNoteAccuracy.append(0)
-                await asyncio.wait([socket.send(message) for socket in sockets])
+                await asyncio.wait([sendMessage(socket, message) for socket in sockets])
     except Exception as e:
         print(e)
+
+async def sendMessage(socket, message):
+    try:
+        await socket.send(message)
+    except websockets.ConnectionClosed:
+        sockets.discard(socket)
 
 
 asyncio.get_event_loop().run_until_complete(asyncio.gather(
