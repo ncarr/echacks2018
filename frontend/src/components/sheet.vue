@@ -81,21 +81,32 @@
         //Note that one bar = 2s
         //notes :w :h :q :8 :16 :32 :64
         // notes :hd :qd :8d :16d :32d :64d (Adding a d for dotted notes)
+        let currentNote = new VF.StaveNote({clef: "bass", keys: [note]});
+
         if (currentBeats + note.time <= 2) {
             //Ensure there's enough room left in the current bar
             currentBeats += note.time;
             if (noteMap[note.time] !== undefined) {
+                //Straight add the note, nothing else is required
                 duration = noteMap[note.time];
+                currentNote.duration = duration;
+                notes.push(currentNote);
             } else if (noteMap[Math.floor(note.time)] !== undefined) {
+                //The note is not one of the standard lengths and is either dotted or tied
                 duration = noteMap[Math.floor(note.time)];
                 if (note.time % 1 === noteMap[Math.floor(note.time)]/2) {
+                    //Dotted note
                     duration.append("d");
+                    currentNote.duration = duration;
+                    notes.push(currentNote);
                 } else if (noteMap[note.time % 1] !== undefined) {
                     //TODO This is a tied note. I have no idea how to deal with this
                     //You need to tie the Math.floor(note.time) with note.time % 1
                 }
             } else {
-                //I don't know what cases go here. TODO log and find out
+                //I don't know what cases go here.
+                console.log("This note is not supposed to happen please help");
+                console.log(note)
             }
         } else {
             note.time -= (2 - currentBeats);
