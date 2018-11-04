@@ -274,8 +274,14 @@
         // Format and justify the notes to 400 pixels.
         var formatter = new VF.Formatter().joinVoices([voice]).format([voice], div.clientWidth);
 
+        //Create group
+        const group = context.openGroup();
+
         // Render voice
         voice.draw(context, stave);
+
+        //Remove group when needed
+        context.svg.removeChild(group);
 
         // Scroll
         /*
