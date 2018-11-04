@@ -34,20 +34,45 @@
   export default {
     data: () => ({
       items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
-      bpm: 120
+      bpm: 120,
+      group: null,
+      context: null,
+      stave: null,
+      renderer: null,
+      div: null,
     }),
     props: ['song'],
+    mounted(){
+      // Create an SVG renderer and attach it to the DIV element named "boo".
+      var VF = Vex.Flow;
+      this.div = document.getElementById("music")
+      this.renderer = new VF.Renderer(this.div, VF.Renderer.Backends.SVG);
+      // Size our svg:
+      this.renderer.resize(this.div.clientWidth, this.div.clientHeight);
+      // And get a drawing context:
+      this.context = this.renderer.getContext();
+      // Create a stave at position 10, 40 of width 400 on the canvas.
+      this.stave = new VF.Stave(10, 40, this.div.clientWidth-20);
+      // Add a clef and time signature.
+      this.stave.addClef("bass").addTimeSignature("4/4");
+      // Connect it to the rendering context and draw!
+      this.stave.setContext(this.context).draw();
+      //Create group
+      this.group = this.context.openGroup();
+      this.context.closeGroup();
+    },
     watch: {
         song(song) {
+        //Remove group when needed
+        this.context.svg.removeChild(this.group);
+        this.group = this.context.openGroup();
         console.log(dict);
 
         var VF = Vex.Flow;
 
-        // Create an SVG renderer and attach it to the DIV element named "boo".
-        var div = document.getElementById("music")
-        var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
-
-        var notes = [];
+        let notes = [];
+        let ties = [];
+        let currentTies = [];
 
         let timeInBar = 0;
         let totalBeats = 0;
@@ -116,6 +141,9 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                        if (i === 0) {
+                            currentTies.push(currentNote);
+                        }
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -158,6 +186,9 @@
                     console.log(noteDurations);
                     for (let i = 0; i < noteDurations.length - 1; i++) {
                         let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                        if (i === 0) {
+                            currentTies.push(currentNote);
+                        }
                         notes.push(currentNote);
                     }
                     duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -220,6 +251,9 @@
                         console.log(noteDurations);
                         for (let i = 0; i < noteDurations.length - 1; i++) {
                             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: noteMap[noteDurations[i]]});
+                            if (i === 0) {
+                                currentTies.push(currentNote);
+                            }
                             notes.push(currentNote);
                         }
                         duration = noteMap[noteDurations[noteDurations.length - 1]];
@@ -235,15 +269,32 @@
                     notes.push(new VF.BarNote());
                 }
             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
+
+            if (duration.charAt(duration.length - 1) == 'd') {
+                currentNote.addDotToAll();
+            }
             //Flat
             if(noteName.length === 4){
                 //Flat
             currentNote.addAccidental(0, new VF.Accidental("b"));
             } else {
                 //rest
-                currentNote.duration = currentNote.duration + "r";
+                console.log("Rest");
+            }
+
+            if (currentTies.length > 0) {
+                currentTies.push(currentNote);
             }
             notes.push(currentNote);
+            if (currentTies.length >= 2) {
+                ties.push(new VF.StaveTie({
+                    first_note: currentTies[0],
+                    last_note: currentTies[currentTies.length - 1],
+                    first_indices: [0],
+                    last_indices: [0]
+                }));
+            }
+            currentTies = [];
             if (barFlag || timeInBar === 2) {
                 notes.push(new VF.BarNote());
                 timeInBar = 0;
@@ -255,14 +306,13 @@
 
         console.log("Total beats in piece: " + (totalBeats * 2).toString());
         // Create a voice in 4/4 and add above notes
-            //todo fix
         var voice = new VF.Voice({num_beats: totalBeats * 2,  beat_value: 4});
         voice.addTickables(notes);
 
         // Size our svg:
-        renderer.resize(notes.length*50, div.clientHeight);
+        this.renderer.resize(notes.length*50, this.div.clientHeight);
         // And get a drawing context:
-        var context = renderer.getContext();
+        var context = this.renderer.getContext();
         // Create a stave at position 10, 40 of width 400 on the canvas.
         var stave = new VF.Stave(10, 40, notes.length*50);
         // Add a clef and time signature.
@@ -277,10 +327,11 @@
         //const group = context.openGroup();
 
         // Render voice
-        voice.draw(context, stave);
-
-        //Remove group when needed
-        //context.svg.removeChild(group);
+        voice.draw(this.context, this.stave);
+        ties.forEach((t) => {t.setContext(this.context).draw()})
+        //group
+        this.context.closeGroup();
+        this.context.svg.appendChild(this.group)
 
         // Scroll
         /*
