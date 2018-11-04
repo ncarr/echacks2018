@@ -1,7 +1,7 @@
 <template>
-  <div style="text-align:center">
+  <div style="text-align:center" id="bg">
     <div class = "column">
-      <v-layout id="options">
+      <v-layout id="options" class="row">
         <h1 class="font-weight-light title">Music Selector</h1>
         <div id="slider">
           <v-slider
@@ -22,6 +22,9 @@
           <v-select :items="items" label="Music" ></v-select>
         </div>
       </v-layout>
+      <div id="pages" class="row">
+        <h1 class="font-weight-light title">Page 1 of 1</h1>
+      </div>
       <div id="music"></div>
     </div>
   </div>
@@ -59,6 +62,7 @@
       var notes = [];
 
       for(let i = 0; i < song.length; i++){
+        //Drawing notes
         var note = dict[song[i].note];
         console.log(note);
         //Flat
@@ -70,27 +74,45 @@
         } else { //flat
           notes.push(new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "qr" }));
         }
+
+        //Measure bars
+        if((i+1)%4 == 0){
+          notes.push(new VF.BarNote());
+        }
       }
 
-    // Create a voice in 4/4 and add above notes
-    var voice = new VF.Voice({num_beats: song.length,  beat_value: 4});
-    voice.addTickables(notes);
+      // Create a voice in 4/4 and add above notes
+      var voice = new VF.Voice({num_beats: song.length,  beat_value: 4});
+      voice.addTickables(notes);
 
-    // Format and justify the notes to 400 pixels.
-    var formatter = new VF.Formatter().joinVoices([voice]).format([voice], div.clientWidth);
+      // Format and justify the notes to 400 pixels.
+      var formatter = new VF.Formatter().joinVoices([voice]).format([voice], div.clientWidth);
 
-    // Render voice
-    voice.draw(context, stave);
+      // Render voice
+      voice.draw(context, stave);
+
+      // Scroll
+      /*
+      while(music.scrollLeft > 0){
+        music.scrollLeft
+      }*/
     }
   }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  #column {
+  .row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .column {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
   }
 
   #slider{
@@ -103,18 +125,19 @@
   }
 
   #options{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
     padding: 10px;
   }
 
   #bpmtext{
-    width: 5%;
+    width: 10%;
   }
 
   #music{
     width: 100%;
+    height: 100%;
+  }
+
+  #bg{
     height: 100%;
   }
 </style>
