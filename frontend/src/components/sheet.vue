@@ -28,17 +28,17 @@
 </template>
 
 <script>
-  import song1 from './assets/notes'
+  import dict from '../assets/notes.json';
   export default {
     data: () => ({
       items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       bpm: 120
     }),
     mounted() {
-      var json = [{"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 0, "time": 1.0}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 0.5}, {"note": 51, "time": 0.25}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.75}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 2.25}]
-      var song = JSON.parse(json);
+      var song = [{"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 0, "time": 1.0}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 0.5}, {"note": 51, "time": 0.25}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.75}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 2.25}]
 
-      var dict = $.getJSON('../assets/notes.json');
+      console.log(song);
+      console.log(dict);
 
       var VF = Vex.Flow;
 
@@ -58,10 +58,19 @@
 
       var notes = [];
 
-      for(i = 0; i < song.length(); i++){
-        var note = new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
-        addAccidental(0, new VF.Accidental("b")),
+      for(let i = 0; i < song.length; i++){
+        var note = dict[song[i].note];
+        console.log(note);
+        if(note.length == 4){
+          notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }).
+          addAccidental(0, new VF.Accidental("b")));
+        } else if(note.length == 3) {
+          notes.push(new VF.StaveNote({clef: "bass", keys: [note], duration: "q" }));
+        } else {
+          notes.push(new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "qr" }));
+        }
       }
+      /*
       var notes = [
       // A quarter-note C.
       new VF.StaveNote({clef: "bass", keys: ["d/3"], duration: "q" }).
@@ -75,13 +84,13 @@
       // A C-Major chord.
       new VF.StaveNote({clef: "bass", keys: ["c/3", "e/3", "g/3"], duration: "q" })
     ];
-
+*/
     // Create a voice in 4/4 and add above notes
-    var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+    var voice = new VF.Voice({num_beats: song.length,  beat_value: 4});
     voice.addTickables(notes);
 
     // Format and justify the notes to 400 pixels.
-    var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+    var formatter = new VF.Formatter().joinVoices([voice]).format([voice], div.clientWidth);
 
     // Render voice
     voice.draw(context, stave);
