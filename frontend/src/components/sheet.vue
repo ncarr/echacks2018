@@ -283,9 +283,9 @@
         voice.addTickables(notes);
 
         // Size our svg:
-        renderer.resize(notes.length*50, div.clientHeight);
+        this.renderer.resize(notes.length*50, this.div.clientHeight);
         // And get a drawing context:
-        var context = renderer.getContext();
+        var context = this.renderer.getContext();
         // Create a stave at position 10, 40 of width 400 on the canvas.
         var stave = new VF.Stave(10, 40, notes.length*50);
         // Add a clef and time signature.
