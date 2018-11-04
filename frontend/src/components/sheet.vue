@@ -324,6 +324,7 @@
 
         console.log("notes length:");
         console.log(notes.length);
+        console.log(notes.length*50);
         // Size our svg:
         this.renderer.resize(notes.length*50, this.div.clientHeight);
         // And get a drawing context:
