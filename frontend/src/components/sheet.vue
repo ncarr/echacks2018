@@ -323,6 +323,8 @@
         var voice = new VF.Voice({num_beats: totalBeats * 2,  beat_value: 4});
         voice.addTickables(notes);
 
+        console.log("notes length:");
+        console.log(notes.length);
         // Size our svg:
         this.renderer.resize(notes.length*50, this.div.clientHeight);
         // And get a drawing context:
