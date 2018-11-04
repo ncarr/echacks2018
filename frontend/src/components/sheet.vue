@@ -23,6 +23,7 @@
       </div>
       <div id="overflow">
           <div id="music"></div>
+          <div id="line"></div>
       </div>
     </div>
   </div>
@@ -174,7 +175,6 @@
                     //Flat
                     let currentNote;
                     if(noteName.length === 4){
-                        //Flat
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                         currentNote.addAccidental(0, new VF.Accidental("b"));
                     } else {
@@ -333,5 +333,13 @@
   }
 
   #bg{
+  }
+
+  #line{
+    border-left: 6px solid green;
+    height: 100px;
+    position: absolute;
+    left: 40;
+    top: 10;
   }
 </style>
