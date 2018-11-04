@@ -70,20 +70,22 @@ async def counter(websocket, path):
     sockets.add(websocket)
     try:
         async for message in websocket:
-            global valves
-            print("message " + message)
-            valves = message[0:5]
-            volume = int(message[6:])
-            if songActive:
-                print("Current: " + valves)
-                print("Expected: " + expected)
-                # Log whether the player hit the note
-                if valves == expected:
-                    currentNoteAccuracy.append(1)
-                else:
-                    currentNoteAccuracy.append(0)
-            for socket in sockets:
-                await socket.send(message)
+            if message == 'json':
+                await websocket.send(midiJSON)
+            else:
+                global valves
+                print("message " + message)
+                valves = message[0:5]
+                volume = int(message[6:])
+                if songActive:
+                    print("Current: " + valves)
+                    print("Expected: " + expected)
+                    # Log whether the player hit the note
+                    if valves == expected:
+                        currentNoteAccuracy.append(1)
+                    else:
+                        currentNoteAccuracy.append(0)
+                await asyncio.wait([socket.send(message) for socket in sockets])
     except Exception as e:
         print(e)
 
