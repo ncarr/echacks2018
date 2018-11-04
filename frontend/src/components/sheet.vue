@@ -38,8 +38,12 @@
       bpm: 120
     }),
     mounted() {
-      var song = [{"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 0, "time": 1.0}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 0.5}, {"note": 51, "time": 0.25}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.75}, {"note": 48, "time": 0.75}, {"note": 46, "time": 1.25}, {"note": 48, "time": 0.75}, {"note": 50, "time": 0.5}, {"note": 48, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 53, "time": 2.25}]
-
+      var song = [{"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.5}, {"note": 46, "time": 1.0}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}]
+      let totalBeats = 0;
+      for (let i = 0; i < song.length; i++) {
+          totalBeats += song[i].time;
+      }
+      totalBeats = totalBeats * 2;
       console.log(song);
       console.log(dict);
 
@@ -61,12 +65,13 @@
 
       var notes = [];
 
-      let currentBeats = 2;
+      let timeInBar = 0;
 
       for(let i = 0; i < song.length; i++){
         //Drawing notes
-        var note = dict[song[i].note];
-        console.log(note);
+        var noteName = dict[song[i].note];
+        var note = song[i];
+        console.log(noteName);
 
         const noteMap = {
             0.25 : "8",
@@ -81,23 +86,31 @@
         //Note that one bar = 2s
         //notes :w :h :q :8 :16 :32 :64
         // notes :hd :qd :8d :16d :32d :64d (Adding a d for dotted notes)
-        let currentNote = new VF.StaveNote({clef: "bass", keys: [note]});
+        let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: "q"});
 
-        if (currentBeats + note.time < 2) {
+        console.log("Initiated note.");
+        console.log("Beats in note:" + note.time);
+        console.log("Beats in bar so far: " + timeInBar);
+        if (timeInBar + note.time < 2) {
             //Ensure there's enough room left in the current bar
-            currentBeats += note.time;
+            console.log("Enough left in current bar");
+            timeInBar += note.time;
             if (noteMap[note.time] !== undefined) {
                 //Straight add the note, nothing else is required
+                console.log("This note makes sense");
                 duration = noteMap[note.time];
                 currentNote.duration = duration;
             } else if (noteMap[Math.floor(note.time)] !== undefined) {
                 //The note is not one of the standard lengths and is either dotted or tied
+                console.log("This note looks funny");
                 duration = noteMap[Math.floor(note.time)];
                 if (note.time % 1 === noteMap[Math.floor(note.time)]/2) {
                     //Dotted note
+                    console.log("Dotted note");
                     duration.append("d");
                     currentNote.duration = duration;
                 } else if (noteMap[note.time % 1] !== undefined) {
+                    console.log("Tied note");
                     //TODO This is a tied note. I have no idea how to deal with this
                     //You need to tie the Math.floor(note.time) with note.time % 1
                 }
@@ -107,9 +120,9 @@
                 console.log(note)
             }
         } else {
-            let firstNoteLength = 2-currentBeats;
-            let secondNoteLength = note.length - firstNoteLength;
-            currentBeats += firstNoteLength;
+            console.log("Not enough left in current bar");
+            let firstNoteLength = 2-timeInBar;
+            timeInBar += firstNoteLength;
             //We're at the end of the measure. Add the last note and then move on
             if (noteMap[firstNoteLength] !== undefined) {
                 //Straight add the note, nothing else is required
@@ -127,30 +140,45 @@
                     //You need to tie the Math.floor(note.time) with note.time % 1
                 }
             }
+            //Flat
+            if(noteName.length === 4){
+                //Flat
+                currentNote.addAccidental(0, new VF.Accidental("b"));
+            } else {
+                //rest
+                currentNote.duration = currentNote.duration + "r"
+            }
             notes.push(currentNote);
             notes.push(new VF.BarNote());
-            currentBeats = secondNoteLength;
-            currentNote = new VF.StaveNote({clef: "bass", keys: [note]});
-            if (noteMap[secondNoteLength] !== undefined) {
-                //Straight add the note, nothing else is required
-                duration = noteMap[secondNoteLength];
-                currentNote.duration = duration;
-            } else if (noteMap[Math.floor(secondNoteLength)] !== undefined) {
-                //The note is not one of the standard lengths and is either dotted or tied
-                duration = noteMap[Math.floor(secondNoteLength)];
-                if (secondNoteLength % 1 === noteMap[Math.floor(secondNoteLength)] / 2) {
-                    //Dotted note
-                    duration.append("d");
+
+            if (note.length < firstNoteLength) {
+                let secondNoteLength = note.length - firstNoteLength;
+                console.log("First note of next bar: " + secondNoteLength);
+                timeInBar = secondNoteLength;
+                currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: "q"});
+                if (noteMap[secondNoteLength] !== undefined) {
+                    //Straight add the note, nothing else is required
+                    duration = noteMap[secondNoteLength];
                     currentNote.duration = duration;
-                } else if (noteMap[secondNoteLength % 1] !== undefined) {
-                    //TODO This is a tied note. I have no idea how to deal with this
-                    //You need to tie the Math.floor(note.time) with note.time % 1
+                } else if (noteMap[Math.floor(secondNoteLength)] !== undefined) {
+                    //The note is not one of the standard lengths and is either dotted or tied
+                    duration = noteMap[Math.floor(secondNoteLength)];
+                    if (secondNoteLength % 1 === noteMap[Math.floor(secondNoteLength)] / 2) {
+                        //Dotted note
+                        duration.append("d");
+                        currentNote.duration = duration;
+                    } else if (noteMap[secondNoteLength % 1] !== undefined) {
+                        //TODO This is a tied note. I have no idea how to deal with this
+                        //You need to tie the Math.floor(note.time) with note.time % 1
+                    }
                 }
+            } else {
+                timeInBar = 0;
             }
         }
 
         //Flat
-        if(note.length === 4){
+        if(noteName.length === 4){
             //Flat
           currentNote.addAccidental(0, new VF.Accidental("b"));
         } else {
@@ -161,8 +189,10 @@
 
       }
 
+      console.log("Added all notes. Moving on to voice.");
+
       // Create a voice in 4/4 and add above notes
-      var voice = new VF.Voice({num_beats: song.length,  beat_value: 4});
+      var voice = new VF.Voice({num_beats: totalBeats,  beat_value: 4});
       voice.addTickables(notes);
 
       // Format and justify the notes to 400 pixels.
