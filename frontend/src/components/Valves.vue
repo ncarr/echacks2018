@@ -26,11 +26,10 @@
     },
     mounted() {
       var scope = this;
-      var ws = new WebSocket("ws://192.168.137.1:6789");
+      var ws = new WebSocket("ws://localhost:6789");
 
       ws.onopen = function() {
         //ws.send("0 1 1");
-        ws.send("ping");
         console.log("Connection started...");
       };
 

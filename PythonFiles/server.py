@@ -81,7 +81,6 @@ async def counter(websocket, path):
                 global valves
                 print("message " + message)
                 valves = message[0:5]
-                volume = int(message[6:])
                 if songActive:
                     print("Current: " + valves)
                     print("Expected: " + expected)
