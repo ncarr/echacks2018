@@ -219,9 +219,12 @@
                     if(noteName.length === 4){
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                         currentNote.addAccidental(0, new VF.Accidental("b"));
-                    } else {
+                    } else if (noteName == "c/5") {
                         //rest
+                        noteName = "d/3";
                         duration += "r";
+                        currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
+                    } else {
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                     }
                     tieToLastNote = currentNote;

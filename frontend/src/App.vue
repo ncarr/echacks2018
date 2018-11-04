@@ -10,6 +10,7 @@
     <v-content>
       <v-select :items="items" v-model="songFile" />
       <sheet :song="songJson"/>
+      <Valves :valve1="expectedValve1" :valve2="expectedValve2" :valve3="expectedValve3" expected />
       <Valves :valve1="valve1" :valve2="valve2" :valve3="valve3" :volume="volume" />
       <!--<dashboard/>-->
     </v-content>
@@ -20,6 +21,7 @@
 import Valves from './components/Valves'
 import dashboard from './components/dashboard'
 import sheet from './components/sheet'
+import fingerings from './assets/fingerings'
 
 export default {
   name: 'App',
@@ -34,6 +36,10 @@ export default {
       valve1: false,
       valve2: false,
       valve3: false,
+      volume: false,
+      expectedValve1: false,
+      expectedValve2: false,
+      expectedValve3: false,
       volume: false,
       songJson: null,
       songFile: 'Birdland.mid',
@@ -88,6 +94,16 @@ export default {
             scope.songJson = JSON.parse(received_msg);
           } else {
             scope.current = JSON.parse(received_msg);
+            const fingering = fingerings[scope.current.note]
+            if (fingering === 'none') {
+              scope.expectedValve1 = false;
+              scope.expectedValve2 = false;
+              scope.expectedValve3 = false;
+            } else {
+              scope.expectedValve1 = !!parseInt(fingering.substring(0, 1));
+              scope.expectedValve2 = !!parseInt(fingering.substring(2, 3));
+              scope.expectedValve3 = !!parseInt(fingering.substring(4, 5));
+            }
           }
       };
 
