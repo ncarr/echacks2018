@@ -46,6 +46,7 @@ async def iterate_over_file(midi_file):
     songActive = True
     for message in midi_file:
         if message.type == 'note_on':
+            noteTime = round(message.time*4)/4
             if message.velocity == 0:
                 # Set the new note
                 global expected
@@ -54,6 +55,8 @@ async def iterate_over_file(midi_file):
                 try:
                     # Calculate the accuracy for the previous note
                     accuracy_percentage = sum(currentNoteAccuracy) / len(currentNoteAccuracy)
+                    # Send message and accuracy to clients
+                    await broadcast(json.dumps({'type': 'note', 'accuracy': accuracy_percentage, 'note': message.note, 'time': noteTime }))
                     # Add it to the list of the whole song
                     songAccuracy.append(accuracy_percentage)
                     currentNoteAccuracy.clear()
@@ -61,6 +64,7 @@ async def iterate_over_file(midi_file):
                     pass
             elif message.velocity == 80:
                 await asyncio.sleep(message.time)
+                await broadcast(json.dumps({'type': 'note', 'note': 0, 'time': noteTime}))
                 currentNoteAccuracy.clear()
     songActive = False
     print(songAccuracy)
@@ -85,9 +89,13 @@ async def counter(websocket, path):
                         currentNoteAccuracy.append(1)
                     else:
                         currentNoteAccuracy.append(0)
-                await asyncio.wait([sendMessage(socket, message) for socket in sockets])
+                await broadcast(message)
     except Exception as e:
         print(e)
+
+async def broadcast(message):
+    if len(sockets) != 0:
+        await asyncio.wait([sendMessage(socket, message) for socket in sockets])
 
 async def sendMessage(socket, message):
     try:
