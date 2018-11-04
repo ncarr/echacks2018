@@ -111,9 +111,42 @@
             let secondNoteLength = note.length - firstNoteLength;
             currentBeats += firstNoteLength;
             //We're at the end of the measure. Add the last note and then move on
-
-            //todo This is a tied note. I have no idea how to deal with this
-            //note.time is remaining time on next note that needs to be carried on
+            if (noteMap[firstNoteLength] !== undefined) {
+                //Straight add the note, nothing else is required
+                duration = noteMap[firstNoteLength];
+                currentNote.duration = duration;
+            } else if (noteMap[Math.floor(firstNoteLength)] !== undefined) {
+                //The note is not one of the standard lengths and is either dotted or tied
+                duration = noteMap[Math.floor(firstNoteLength)];
+                if (firstNoteLength % 1 === noteMap[Math.floor(firstNoteLength)] / 2) {
+                    //Dotted note
+                    duration.append("d");
+                    currentNote.duration = duration;
+                } else if (noteMap[firstNoteLength % 1] !== undefined) {
+                    //TODO This is a tied note. I have no idea how to deal with this
+                    //You need to tie the Math.floor(note.time) with note.time % 1
+                }
+            }
+            notes.push(currentNote);
+            notes.push(new VF.BarNote());
+            currentBeats = secondNoteLength;
+            currentNote = new VF.StaveNote({clef: "bass", keys: [note]});
+            if (noteMap[secondNoteLength] !== undefined) {
+                //Straight add the note, nothing else is required
+                duration = noteMap[secondNoteLength];
+                currentNote.duration = duration;
+            } else if (noteMap[Math.floor(secondNoteLength)] !== undefined) {
+                //The note is not one of the standard lengths and is either dotted or tied
+                duration = noteMap[Math.floor(secondNoteLength)];
+                if (secondNoteLength % 1 === noteMap[Math.floor(secondNoteLength)] / 2) {
+                    //Dotted note
+                    duration.append("d");
+                    currentNote.duration = duration;
+                } else if (noteMap[secondNoteLength % 1] !== undefined) {
+                    //TODO This is a tied note. I have no idea how to deal with this
+                    //You need to tie the Math.floor(note.time) with note.time % 1
+                }
+            }
         }
 
         //Flat
@@ -126,10 +159,6 @@
         }
         notes.push(currentNote);
 
-        //Measure bars
-        if((i+1)%4 == 0){
-          notes.push(new VF.BarNote());
-        }
       }
 
       // Create a voice in 4/4 and add above notes
