@@ -39,11 +39,7 @@
     }),
     mounted() {
       var song = [{"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.5}, {"note": 46, "time": 1.0}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.5}, {"note": 46, "time": 0.25}, {"note": 46, "time": 0.25}]
-      let totalBeats = 0;
-      for (let i = 0; i < song.length; i++) {
-          totalBeats += song[i].time;
-      }
-      totalBeats = totalBeats * 2;
+
       console.log(song);
       console.log(dict);
 
@@ -66,11 +62,13 @@
       var notes = [];
 
       let timeInBar = 0;
+      let totalBeats = 0;
 
       for(let i = 0; i < song.length; i++){
         //Drawing notes
         var noteName = dict[song[i].note];
         var note = song[i];
+        totalBeats += note.time;
         console.log(noteName);
 
         const noteMap = {
@@ -191,8 +189,9 @@
 
       console.log("Added all notes. Moving on to voice.");
 
+      console.log("Total beats in piece: " + (totalBeats * 2).toString());
       // Create a voice in 4/4 and add above notes
-      var voice = new VF.Voice({num_beats: totalBeats,  beat_value: 4});
+      var voice = new VF.Voice({num_beats: totalBeats * 2 + 3,  beat_value: 4});
       voice.addTickables(notes);
 
       // Format and justify the notes to 400 pixels.
