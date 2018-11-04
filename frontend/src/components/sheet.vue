@@ -18,7 +18,7 @@
           ></v-text-field>
         </div>
       </v-layout>
-      <div id="overflow">
+      <div id="container">
           <div id="music"></div>
           <div id="line"></div>
       </div>
@@ -217,9 +217,12 @@
                     if(noteName.length === 4){
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                         currentNote.addAccidental(0, new VF.Accidental("b"));
-                    } else {
+                    } else if (noteName == "c/5") {
                         //rest
+                        noteName = "d/3";
                         duration += "r";
+                        currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
+                    } else {
                         currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
                     }
                     tieToLastNote = currentNote;
@@ -284,6 +287,11 @@
                 if (duration == 1) {
                     notes.push(new VF.BarNote());
                 }
+            if (noteName == "c/5") {
+                noteName = "d/3";
+                duration += "r";
+            }
+
             let currentNote = new VF.StaveNote({clef: "bass", keys: [noteName], duration: duration});
 
             if (duration.charAt(duration.length - 1) == 'd') {
@@ -293,9 +301,6 @@
             if(noteName.length === 4){
                 //Flat
             currentNote.addAccidental(0, new VF.Accidental("b"));
-            } else {
-                //rest
-                console.log("Rest");
             }
 
             if (tieToLastNote) {
@@ -327,7 +332,7 @@
         console.log(notes.length);
         console.log(notes.length*50);
         // Size our svg:
-        this.renderer.resize(notes.length*50, this.div.clientHeight);
+        this.renderer.resize(notes.length*50 + 50, this.div.clientHeight);
         // And get a drawing context:
         var context = this.renderer.getContext();
         // Create a stave at position 10, 40 of width 400 on the canvas.
@@ -396,7 +401,7 @@
     transform: translateX(-2000px);
   }
 
-  #overflow{
+  #container{
     width: 100%;
   }
 
