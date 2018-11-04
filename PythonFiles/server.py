@@ -28,6 +28,7 @@ for msg in songFile:
             })
 # Convert it to JSON
 midiJSON = json.dumps(midiList)
+print(midiJSON)
 
 # For reference = Bb is note 46, High Bb is 58, Middle C is 60
 # Load the fingerings file for the baritone
